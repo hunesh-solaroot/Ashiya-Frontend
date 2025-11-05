@@ -1,11 +1,9 @@
 import axios from 'axios';
 import { LoginCredentials, RegisterCredentials, AuthResponse, OAuthCredentials, User, LoginApiResponse, RegisterApiResponse } from '@/types';
 
-// Using Next.js API routes as proxy to avoid CORS issues
-// Note: In production, use proper SSL certificates with HTTPS
-const API_BASE_URL = typeof window !== 'undefined' 
-  ? '/api' // Use Next.js API routes in browser
-  : 'http://155.117.40.181:4020/api/v1'; // Direct connection from server-side
+// Direct backend API URL
+// Note: Ensure CORS is configured on the backend to allow requests from this origin
+const API_BASE_URL = 'http://155.117.40.181:4020/api/v1';
 
 // Token storage utilities (localStorage with encryption-like naming)
 const TOKEN_KEY = 'ashiya_auth_token';
@@ -56,20 +54,28 @@ class AuthService {
     return !!this.getToken();
   }
 
-  // Register new user
+  // Register new user (Signup)
   async register(credentials: RegisterCredentials): Promise<AuthResponse> {
     try {
-      const response = await axios.post<RegisterApiResponse>(
-        `${API_BASE_URL}/auth/register`,
-        credentials,
+      const payload = {
+        email: credentials.email,
+        username: credentials.username,
+        full_name: credentials.full_name,
+        password: credentials.password,
+        ...(credentials.phone_number && { phone_number: credentials.phone_number }),
+        ...(credentials.profile_picture_url && { profile_picture_url: credentials.profile_picture_url }),
+      };
+
+      const response = await axios.post<LoginApiResponse>(
+        `${API_BASE_URL}/auth/signup/complete`,
+        payload,
         {
           headers: {
             'Content-Type': 'application/json',
           },
-          timeout: 30000, // 30 second timeout
+          timeout: 30000,
         }
       ).catch((error: any) => {
-        // Better error handling for network issues
         if (error.code === 'ERR_NETWORK' || error.code === 'ECONNABORTED' || error.message?.includes('ERR_EMPTY_RESPONSE')) {
           throw new Error('Network error: Unable to connect to server. Please check your connection or try again later.');
         }
@@ -79,9 +85,8 @@ class AuthService {
         throw new Error(`Network error: ${error.message || 'Connection failed'}`);
       });
 
-      // Handle different response formats
-      if (response.data.access_token) {
-        // Format: { access_token, token_type }
+      // API returns { access_token, token_type }
+      if (response.data && response.data.access_token) {
         this.setToken(response.data.access_token);
         
         // Fetch user details after successful registration
@@ -94,21 +99,17 @@ class AuthService {
             user: userData || {
               id: '',
               email: credentials.email,
-              name: credentials.full_name,
+              full_name: credentials.full_name,
+              username: credentials.username,
             },
           },
         };
-      } else if (response.data.success && response.data.data) {
-        // Format: { success, data: { token, user } }
-        this.setToken(response.data.data.token);
-        this.setUser(response.data.data.user);
-        return response.data as AuthResponse;
       }
 
-      throw new Error('Registration failed: Unexpected response format');
+      throw new Error('Registration failed: No access token received');
     } catch (error: any) {
       throw new Error(
-        error.response?.data?.message || error.message || 'Registration failed. Please try again.'
+        error.response?.data?.message || error.response?.data?.detail || error.message || 'Registration failed. Please try again.'
       );
     }
   }
@@ -116,25 +117,28 @@ class AuthService {
   // Login with email and password
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
+      const payload = {
+        email: credentials.email,
+        password: credentials.password,
+        keep_logged_in: credentials.keep_logged_in || false,
+      };
+
       const response = await axios.post<LoginApiResponse>(
         `${API_BASE_URL}/auth/login`,
-        credentials,
+        payload,
         {
           headers: {
             'Content-Type': 'application/json',
           },
-          timeout: 30000, // 30 second timeout
+          timeout: 30000,
         }
       ).catch((error: any) => {
-        // Better error handling for network issues
         if (error.code === 'ERR_NETWORK' || error.code === 'ECONNABORTED' || error.message?.includes('ERR_EMPTY_RESPONSE')) {
           throw new Error('Network error: Unable to connect to server. Please check your connection or try again later.');
         }
         if (error.response) {
-          // Server responded with error status
           throw error;
         }
-        // Network or other error
         throw new Error(`Network error: ${error.message || 'Connection failed'}`);
       });
 
@@ -145,7 +149,6 @@ class AuthService {
         // Fetch user details after successful login
         const userData = await this.getCurrentUser();
         
-        // Return in expected format
         return {
           success: true,
           data: {
@@ -160,7 +163,6 @@ class AuthService {
 
       throw new Error('Login failed: No access token received');
     } catch (error: any) {
-      // Extract error message
       const errorMessage = error.response?.data?.message 
         || error.response?.data?.detail
         || error.message 
@@ -170,12 +172,12 @@ class AuthService {
     }
   }
 
-  // Login with Google (Google ID token)
-  async loginWithGoogle(googleIdToken: string): Promise<AuthResponse> {
+  // Login with Google
+  async loginWithGoogle(googleToken: string): Promise<AuthResponse> {
     try {
       const response = await axios.post<LoginApiResponse>(
-        `${API_BASE_URL}/auth/google-login`,
-        { token: googleIdToken },
+        `${API_BASE_URL}/auth/login/google`,
+        { token: googleToken },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -183,21 +185,15 @@ class AuthService {
         }
       );
 
-      // API returns { access_token, token_type }
-      if (response.data.access_token) {
+      if (response.data && response.data.access_token) {
         this.setToken(response.data.access_token);
-        
-        // Fetch user details after successful login
         const userData = await this.getCurrentUser();
         
         return {
           success: true,
           data: {
             token: response.data.access_token,
-            user: userData || {
-              id: '',
-              email: '',
-            },
+            user: userData || { id: '', email: '' },
           },
         };
       }
@@ -210,12 +206,12 @@ class AuthService {
     }
   }
 
-  // Login with OAuth providers (Google/Microsoft/GitHub/Facebook)
-  async loginWithOAuth(credentials: OAuthCredentials): Promise<AuthResponse> {
+  // Login with Microsoft
+  async loginWithMicrosoft(microsoftToken: string): Promise<AuthResponse> {
     try {
       const response = await axios.post<LoginApiResponse>(
-        `${API_BASE_URL}/auth/login/oauth`,
-        credentials,
+        `${API_BASE_URL}/auth/login/microsoft`,
+        { token: microsoftToken },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -223,29 +219,125 @@ class AuthService {
         }
       );
 
-      // API returns { access_token, token_type }
-      if (response.data.access_token) {
+      if (response.data && response.data.access_token) {
         this.setToken(response.data.access_token);
-        
-        // Fetch user details after successful login
         const userData = await this.getCurrentUser();
         
         return {
           success: true,
           data: {
             token: response.data.access_token,
-            user: userData || {
-              id: '',
-              email: '',
-            },
+            user: userData || { id: '', email: '' },
           },
         };
       }
 
-      throw new Error('OAuth login failed: No access token received');
+      throw new Error('Microsoft login failed: No access token received');
     } catch (error: any) {
       throw new Error(
-        error.response?.data?.message || error.message || 'OAuth login failed. Please try again.'
+        error.response?.data?.message || error.message || 'Microsoft login failed. Please try again.'
+      );
+    }
+  }
+
+  // Login with Phone
+  async loginWithPhone(phoneNumber: string, verificationCode: string): Promise<AuthResponse> {
+    try {
+      const response = await axios.post<LoginApiResponse>(
+        `${API_BASE_URL}/auth/login/phone`,
+        { phone_number: phoneNumber, verification_code: verificationCode },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data && response.data.access_token) {
+        this.setToken(response.data.access_token);
+        const userData = await this.getCurrentUser();
+        
+        return {
+          success: true,
+          data: {
+            token: response.data.access_token,
+            user: userData || { id: '', email: '' },
+          },
+        };
+      }
+
+      throw new Error('Phone login failed: No access token received');
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || 'Phone login failed. Please try again.'
+      );
+    }
+  }
+
+  // Signup with Google
+  async signupWithGoogle(googleToken: string): Promise<AuthResponse> {
+    try {
+      const response = await axios.post<LoginApiResponse>(
+        `${API_BASE_URL}/auth/signup/google`,
+        { token: googleToken },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data && response.data.access_token) {
+        this.setToken(response.data.access_token);
+        const userData = await this.getCurrentUser();
+        
+        return {
+          success: true,
+          data: {
+            token: response.data.access_token,
+            user: userData || { id: '', email: '' },
+          },
+        };
+      }
+
+      throw new Error('Google signup failed: No access token received');
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || 'Google signup failed. Please try again.'
+      );
+    }
+  }
+
+  // Signup with Microsoft
+  async signupWithMicrosoft(microsoftToken: string): Promise<AuthResponse> {
+    try {
+      const response = await axios.post<LoginApiResponse>(
+        `${API_BASE_URL}/auth/signup/microsoft`,
+        { token: microsoftToken },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data && response.data.access_token) {
+        this.setToken(response.data.access_token);
+        const userData = await this.getCurrentUser();
+        
+        return {
+          success: true,
+          data: {
+            token: response.data.access_token,
+            user: userData || { id: '', email: '' },
+          },
+        };
+      }
+
+      throw new Error('Microsoft signup failed: No access token received');
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || error.message || 'Microsoft signup failed. Please try again.'
       );
     }
   }
@@ -326,13 +418,12 @@ class AuthService {
   // Reset password
   async resetPassword(
     token: string,
-    password: string,
-    otp?: string
+    newPassword: string
   ): Promise<{ success: boolean; message?: string }> {
     try {
       const response = await axios.post<{ success: boolean; message?: string }>(
         `${API_BASE_URL}/auth/reset-password`,
-        { token, password, otp },
+        { token, new_password: newPassword },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -349,8 +440,38 @@ class AuthService {
   }
 
   // Logout
-  logout(): void {
-    this.clearAuth();
+  async logout(): Promise<void> {
+    try {
+      const token = this.getToken();
+      const user = this.getUser();
+      
+      if (token && user) {
+        // Call logout API with user information
+        await axios.post(
+          `${API_BASE_URL}/auth/logout`,
+          {
+            user_id: user.id,
+            email: user.email,
+            message: 'User logged out'
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        ).catch((error) => {
+          // Even if API call fails, clear local auth
+          console.error('Logout API error:', error);
+        });
+      }
+    } catch (error) {
+      // Even if API call fails, clear local auth
+      console.error('Logout error:', error);
+    } finally {
+      // Always clear local auth data
+      this.clearAuth();
+    }
   }
 }
 

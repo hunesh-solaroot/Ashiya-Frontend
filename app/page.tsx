@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar/Sidebar';
-import Header from '@/components/Header/Header';
 import ChatInterface from '@/components/Chat/ChatInterface';
 import ChatInput from '@/components/Chat/ChatInput';
 import LoginModal from '@/components/Auth/LoginModal';
 import RegisterModal from '@/components/Auth/RegisterModal';
+import ForgotPasswordModal from '@/components/Auth/ForgotPasswordModal';
 import ApiService from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 import { ChatMessage, ChatHistoryItem } from '@/types';
@@ -18,6 +18,7 @@ export default function Home() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const apiService = new ApiService();
@@ -77,7 +78,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex h-screen bg-gray-50">
+      <div className="flex h-screen bg-[#171717] overflow-hidden">
         <Sidebar 
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -85,9 +86,8 @@ export default function Home() {
           onLoginClick={() => setShowLoginModal(true)}
         />
         
-        <div className="flex-1 flex flex-col">
-          <Header />
-          <ChatInterface messages={messages} />
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <ChatInterface messages={messages} isLoading={isLoading} />
           <ChatInput
             inputValue={inputValue}
             isLoading={isLoading}
@@ -108,6 +108,10 @@ export default function Home() {
           setShowLoginModal(false);
           setShowRegisterModal(true);
         }}
+        onSwitchToForgotPassword={() => {
+          setShowLoginModal(false);
+          setShowForgotPasswordModal(true);
+        }}
       />
 
       {/* Register Modal */}
@@ -118,6 +122,18 @@ export default function Home() {
         }}
         onSwitchToLogin={() => {
           setShowRegisterModal(false);
+          setShowLoginModal(true);
+        }}
+      />
+
+      {/* Forgot Password Modal */}
+      <ForgotPasswordModal
+        isOpen={showForgotPasswordModal}
+        onClose={() => {
+          setShowForgotPasswordModal(false);
+        }}
+        onBackToLogin={() => {
+          setShowForgotPasswordModal(false);
           setShowLoginModal(true);
         }}
       />

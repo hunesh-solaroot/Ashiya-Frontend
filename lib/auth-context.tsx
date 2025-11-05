@@ -11,7 +11,10 @@ interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (credentials: RegisterCredentials) => Promise<void>;
   loginWithGoogle: (token: string) => Promise<void>;
-  loginWithOAuth: (credentials: OAuthCredentials) => Promise<void>;
+  loginWithMicrosoft: (token: string) => Promise<void>;
+  loginWithPhone: (phoneNumber: string, verificationCode: string) => Promise<void>;
+  signupWithGoogle: (token: string) => Promise<void>;
+  signupWithMicrosoft: (token: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -97,21 +100,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const loginWithOAuth = async (credentials: OAuthCredentials) => {
+  const loginWithMicrosoft = async (token: string) => {
     try {
-      const response = await authService.loginWithOAuth(credentials);
+      const response = await authService.loginWithMicrosoft(token);
       if (response.success && response.data) {
         setUser(response.data.user);
       } else {
-        throw new Error(response.message || 'OAuth login failed');
+        throw new Error(response.message || 'Microsoft login failed');
       }
     } catch (error: any) {
       throw error;
     }
   };
 
-  const logout = () => {
-    authService.logout();
+  const loginWithPhone = async (phoneNumber: string, verificationCode: string) => {
+    try {
+      const response = await authService.loginWithPhone(phoneNumber, verificationCode);
+      if (response.success && response.data) {
+        setUser(response.data.user);
+      } else {
+        throw new Error(response.message || 'Phone login failed');
+      }
+    } catch (error: any) {
+      throw error;
+    }
+  };
+
+  const signupWithGoogle = async (token: string) => {
+    try {
+      const response = await authService.signupWithGoogle(token);
+      if (response.success && response.data) {
+        setUser(response.data.user);
+      } else {
+        throw new Error(response.message || 'Google signup failed');
+      }
+    } catch (error: any) {
+      throw error;
+    }
+  };
+
+  const signupWithMicrosoft = async (token: string) => {
+    try {
+      const response = await authService.signupWithMicrosoft(token);
+      if (response.success && response.data) {
+        setUser(response.data.user);
+      } else {
+        throw new Error(response.message || 'Microsoft signup failed');
+      }
+    } catch (error: any) {
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    await authService.logout();
     setUser(null);
   };
 
@@ -133,7 +175,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     register,
     loginWithGoogle,
-    loginWithOAuth,
+    loginWithMicrosoft,
+    loginWithPhone,
+    signupWithGoogle,
+    signupWithMicrosoft,
     logout,
     refreshUser,
   };

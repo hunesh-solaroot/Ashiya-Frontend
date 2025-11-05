@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    const response = await axios.post('https://155.117.40.181:4020/api/v1/auth/register', body, {
+    const response = await axios.post('https://155.117.40.181:4020/api/v1/auth/signup', body, {
       headers: {
         'Content-Type': 'application/json',
       },
