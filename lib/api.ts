@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import authService from './auth';
 
 export interface ChatMessage {
   id: string;
@@ -27,8 +28,15 @@ class ApiService {
       'Content-Type': 'application/json',
     };
 
+    // First check for API key (for backward compatibility)
     if (this.apiKey) {
       headers['Authorization'] = `Bearer ${this.apiKey}`;
+    } else {
+      // Otherwise, get token from auth service
+      const token = authService.getToken();
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
     }
 
     return headers;

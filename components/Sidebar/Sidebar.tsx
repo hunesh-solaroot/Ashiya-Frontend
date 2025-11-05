@@ -6,11 +6,49 @@ import {
   Folder, 
   ChevronDown,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  LogOut
 } from 'lucide-react';
 import { SidebarProps } from '@/types';
+import { useAuth } from '@/lib/auth-context';
+import { useState, useRef, useEffect } from 'react';
 
-export default function Sidebar({ isCollapsed, onToggle, chatHistory }: SidebarProps) {
+interface SidebarPropsExtended extends SidebarProps {
+  onLoginClick?: () => void;
+}
+
+export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginClick }: SidebarPropsExtended) {
+  const { user, logout, isAuthenticated } = useAuth();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setShowUserMenu(false);
+  };
+
+  const userInitial = user?.full_name
+    ? user.full_name.charAt(0).toUpperCase()
+    : user?.name
+    ? user.name.charAt(0).toUpperCase()
+    : user?.username
+    ? user.username.charAt(0).toUpperCase()
+    : user?.email
+    ? user.email.charAt(0).toUpperCase()
+    : 'A';
+
+  const displayName = user?.full_name || user?.name || user?.username || user?.email?.split('@')[0] || 'Alexandra';
   return (
     <div className={`${isCollapsed ? 'w-20' : 'w-1/5'} bg-gray-100 border-r border-gray-200 flex flex-col transition-all duration-500 ease-in-out relative group`}>
       {/* Toggle Button */}
@@ -116,19 +154,60 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory }: SidebarP
       {isCollapsed && <div className="flex-1"></div>}
 
       {/* User Profile - Always expanded style, positioned at bottom */}
-      <div className="p-4 border-t border-gray-200 mt-auto">
-        <div className={`flex items-center transition-all duration-500 ease-in-out ${isCollapsed ? 'justify-center' : 'space-x-2'}`}>
-          <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-bold text-sm">A</span>
-          </div>
-          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
-            <div className="flex items-center space-x-2 whitespace-nowrap">
-              <span className="text-gray-800 font-medium">Alexandra</span>
-              <ChevronDown size={16} className="text-gray-400 flex-shrink-0" />
+      {isAuthenticated && user ? (
+        <div className="p-4 border-t border-gray-200 mt-auto relative" ref={menuRef}>
+          <button
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            className={`w-full flex items-center transition-all duration-500 ease-in-out ${isCollapsed ? 'justify-center' : 'space-x-2'} hover:bg-gray-200 rounded-lg p-2 transition-colors`}
+          >
+            <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-bold text-sm">{userInitial}</span>
+            </div>
+            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
+              <div className="flex items-center space-x-2 whitespace-nowrap">
+                <span className="text-gray-800 font-medium">{displayName}</span>
+                <ChevronDown size={16} className="text-gray-400 flex-shrink-0" />
+              </div>
+            </div>
+          </button>
+
+          {/* User Menu Dropdown */}
+          {showUserMenu && !isCollapsed && (
+            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+              <div className="px-4 py-2 border-b border-gray-200">
+                <p className="text-sm font-semibold text-gray-900">{displayName}</p>
+                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors"
+              >
+                <LogOut size={16} />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="p-4 border-t border-gray-200 mt-auto">
+          {onLoginClick && !isCollapsed ? (
+            <button
+              onClick={onLoginClick}
+              className="w-full bg-primary-600 text-white rounded-lg py-2 px-4 font-medium hover:bg-primary-700 transition-colors mb-2"
+            >
+              Log In
+            </button>
+          ) : null}
+          <div className={`flex items-center transition-all duration-500 ease-in-out ${isCollapsed ? 'justify-center' : 'space-x-2'}`}>
+            <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-gray-600 font-bold text-sm">G</span>
+            </div>
+            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
+              <span className="text-gray-600 font-medium">Guest</span>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
