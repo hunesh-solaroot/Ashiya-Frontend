@@ -8,6 +8,11 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'A.S.H.I.Y.A - Advanced Solar Heuristic Intelligence for Yield Audit',
   description: 'AI-powered solar yield audit platform',
+  icons: {
+    icon: '/logo-collapsed.png',
+    shortcut: '/logo-collapsed.png',
+    apple: '/logo-collapsed.png',
+  },
 }
 
 export default function RootLayout({

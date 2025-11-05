@@ -75,7 +75,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
           </button>
 
           <div className="flex items-center justify-center mt-2 mb-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#533293] to-[#A4496A] rounded-full flex items-center justify-center">
               <Mail className="text-white w-6 h-6" />
             </div>
           </div>
@@ -98,7 +98,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
               
               <button
                 onClick={onBackToLogin}
-                className="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 transition-all shadow-lg"
+                className="w-full bg-gradient-to-r from-[#533293] to-[#A4496A] text-white py-3 rounded-lg font-semibold hover:from-[#533293]/90 hover:to-[#A4496A]/90 transition-all shadow-lg"
               >
                 Back to Login
               </button>
@@ -129,7 +129,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
               <button
                 type="submit"
                 disabled={isLoading || !email.trim()}
-                className="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                className="w-full bg-gradient-to-r from-[#533293] to-[#A4496A] text-white py-3 rounded-lg font-semibold hover:from-[#533293]/90 hover:to-[#A4496A]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               >
                 {isLoading ? 'Sending...' : 'Send Reset Link'}
               </button>
@@ -139,7 +139,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
                 <button
                   type="button"
                   onClick={onBackToLogin}
-                  className="text-primary-400 hover:text-primary-300 font-semibold hover:underline"
+                  className="text-[#A4496A] hover:text-[#A4496A]/80 font-semibold hover:underline"
                 >
                   Back to Login
                 </button>

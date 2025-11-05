@@ -28,12 +28,12 @@ export default function ChatInput({
   }, [inputValue]);
 
   return (
-    <div className="border-t border-gray-800 bg-[#171717]">
+    <div className="bg-[#171717]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-5">
         <div className="relative">
-          <div className="flex items-end gap-3 bg-[#2f2f2f] border-2 border-gray-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 focus-within:border-primary-500 focus-within:ring-4 focus-within:ring-primary-500/20">
+          <div className="flex items-end gap-3 bg-[#2f2f2f] border-2 border-gray-700 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 focus-within:border-[#533293] focus-within:ring-4 focus-within:ring-[#533293]/20">
             <button 
-              className="p-2.5 text-gray-400 hover:text-primary-400 hover:bg-[#3f3f3f] rounded-lg transition-all duration-200 ml-2 mb-2"
+              className="p-2.5 text-gray-400 hover:text-[#A4496A] hover:bg-[#3f3f3f] rounded-lg transition-all duration-200 ml-2 mb-2"
               title="Attach file"
             >
               <Paperclip size={20} />
@@ -53,14 +53,37 @@ export default function ChatInput({
             
             <button
               onClick={onSendMessage}
-              disabled={!inputValue.trim() || isLoading}
-              className="m-2 p-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex-shrink-0 shadow-md hover:shadow-lg disabled:hover:shadow-md transform hover:scale-105 disabled:hover:scale-100"
-              title="Send message"
+              disabled={isLoading}
+              className={`m-2 p-2.5 rounded-xl transition-all duration-200 flex-shrink-0 shadow-md hover:shadow-lg transform hover:scale-105 disabled:hover:scale-100 ${
+                inputValue.trim() 
+                  ? 'bg-gradient-to-r from-[#533293] to-[#A4496A] text-white hover:from-[#533293]/90 hover:to-[#A4496A]/90 disabled:opacity-50 disabled:cursor-not-allowed' 
+                  : 'bg-[#3f3f3f] text-gray-400 hover:bg-[#4f4f4f] hover:text-[#A4496A] disabled:opacity-50 disabled:cursor-not-allowed'
+              }`}
+              title={inputValue.trim() ? "Send message" : "Voice input"}
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
+              ) : inputValue.trim() ? (
                 <Send size={20} />
+              ) : (
+                <svg 
+                  width={20} 
+                  height={20} 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  {/* Left bar - short */}
+                  <rect x="2" y="14" width="3" height="6" rx="1.5" fill="white" />
+                  {/* Second bar - medium */}
+                  <rect x="6" y="10" width="3" height="10" rx="1.5" fill="white" />
+                  {/* Center bar - tall */}
+                  <rect x="10" y="4" width="3" height="16" rx="1.5" fill="white" />
+                  {/* Fourth bar - medium */}
+                  <rect x="14" y="10" width="3" height="10" rx="1.5" fill="white" />
+                  {/* Right bar - short */}
+                  <rect x="18" y="14" width="3" height="6" rx="1.5" fill="white" />
+                </svg>
               )}
             </button>
           </div>

@@ -36,13 +36,23 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginCli
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Auto-expand on hover, collapse on mouse leave
+  // Auto-expand on hover, collapse on mouse leave with delay
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
     if (isHovered && isCollapsed) {
-      onToggle();
+      timeoutId = setTimeout(() => {
+        onToggle();
+      }, 100); // Small delay for smooth transition
     } else if (!isHovered && !isCollapsed) {
-      onToggle();
+      timeoutId = setTimeout(() => {
+        onToggle();
+      }, 200); // Slightly longer delay when leaving
     }
+    
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHovered]);
 
@@ -64,22 +74,21 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginCli
   const displayName = user?.full_name || user?.name || user?.username || user?.email?.split('@')[0] || 'Alexandra';
   return (
     <div 
-      className={`${isCollapsed ? 'w-16' : 'w-64'}  bg-[#171717] border-r border-gray-800 flex flex-col transition-all duration-300 ease-in-out relative group`}
+      className={`${isCollapsed ? 'w-16' : 'w-64'} bg-[#171717] border-r border-gray-800 flex flex-col transition-all duration-500 ease-in-out relative group`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Logo */}
-      <div className={`${isCollapsed ? 'px-2 py-3' : 'px-4 py-3'} flex items-center justify-center transition-all duration-300`}>
+      <div className={`${isCollapsed ? 'px-2 py-3' : 'px-4 py-3'} flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'} transition-all duration-500 ease-in-out`}>
         {isCollapsed ? (
           <div className="w-full flex items-center justify-center">
             <Image
               src="/logo-collapsed.png"
               alt="Logo"
-              width={500}
-              height={500}
+              width={48}
+              height={48}
               className="object-contain"
               priority
-              style={{ width: '100%', height: 'auto', maxWidth: '56px', maxHeight: '56px' }}
             />
           </div>
         ) : (
@@ -95,10 +104,10 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginCli
       </div>
 
       {/* New Chat Button */}
-      <div className={`${isCollapsed ? 'px-2' : 'px-3'} pt-2 pb-3 transition-all duration-300`}>
+      <div className={`${isCollapsed ? 'px-2' : 'px-3'} pt-2 pb-3 transition-all duration-500 ease-in-out ${isCollapsed ? 'flex items-center justify-center' : ''}`}>
         <button 
-          className={`w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg flex items-center justify-center hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02] ${
-            isCollapsed ? 'px-3 py-3' : 'px-4 py-3 space-x-2'
+          className={`bg-gradient-to-r from-[#533293] to-[#A4496A] text-white rounded-lg flex items-center hover:from-[#533293]/90 hover:to-[#A4496A]/90 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02] ${
+            isCollapsed ? 'w-[42px] h-[40px] p-0 justify-center' : 'w-full px-4 py-3 space-x-2 justify-start'
           }`}
           title={isCollapsed ? "New chat" : ""}
         >
@@ -111,7 +120,7 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginCli
 
       {/* Search */}
       {!isCollapsed && (
-        <div className="px-3 mb-2 transition-all duration-300">
+        <div className="px-3 mb-2 transition-all duration-500 ease-in-out">
           <div className="relative">
             <Search size={14} className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
@@ -124,7 +133,7 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginCli
       )}
 
       {isCollapsed && (
-        <div className="px-2 mb-2 transition-all duration-300">
+        <div className="px-2 mb-2 transition-all duration-500 ease-in-out">
           <button 
             className="w-full flex items-center justify-center p-2 rounded-lg hover:bg-[#2f2f2f] text-gray-400 transition-colors duration-200"
             title="Search"
@@ -139,14 +148,14 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginCli
         <div className="flex-1 px-3 overflow-y-auto scrollbar-thin dark-scrollbar">
           <div className="space-y-1 mt-3">
             {chatHistory.map((item, idx) => (
-              <button
+          <button 
                 key={item.id} 
                 className="w-full text-left p-3 rounded-lg hover:bg-[#2f2f2f] cursor-pointer transition-all duration-200 group transform hover:translate-x-1"
                 style={{ animationDelay: `${idx * 0.05}s` }}
-              >
+          >
                 <div className="font-medium text-gray-300 text-sm truncate group-hover:text-white transition-colors">{item.title}</div>
                 <div className="text-gray-500 text-xs truncate mt-0.5">{item.subtitle}</div>
-              </button>
+          </button>
             ))}
           </div>
         </div>
@@ -163,7 +172,7 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginCli
               onClick={() => setShowUserMenu(!showUserMenu)}
               className={`w-full flex items-center gap-2 hover:bg-[#2f2f2f] rounded-lg p-2 transition-colors ${isCollapsed ? 'justify-center' : ''}`}
             >
-              <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md ring-2 ring-primary-500/20">
+              <div className="w-9 h-9 bg-gradient-to-br from-[#533293] to-[#A4496A] rounded-lg flex items-center justify-center flex-shrink-0 shadow-md ring-2 ring-[#533293]/20">
                 <span className="text-white font-bold text-sm">{userInitial}</span>
               </div>
               {!isCollapsed && (
@@ -206,7 +215,7 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginCli
             {onLoginClick && !isCollapsed ? (
               <button
                 onClick={onLoginClick}
-                className="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg py-2 px-3 font-medium hover:from-primary-700 hover:to-primary-800 transition-colors mb-2 text-sm shadow-md"
+                className="w-full bg-gradient-to-r from-[#533293] to-[#A4496A] text-white rounded-lg py-2 px-3 font-medium hover:from-[#533293]/90 hover:to-[#A4496A]/90 transition-colors mb-2 text-sm shadow-md"
               >
                 Log In
               </button>
@@ -214,12 +223,12 @@ export default function Sidebar({ isCollapsed, onToggle, chatHistory, onLoginCli
             <div className={`flex items-center gap-2 ${isCollapsed ? 'justify-center' : ''}`}>
               <div className="w-8 h-8 bg-[#2f2f2f] rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-gray-400 font-bold text-sm">G</span>
-              </div>
+            </div>
               {!isCollapsed && (
                 <span className="text-gray-400 font-medium text-sm">Guest</span>
               )}
-            </div>
           </div>
+        </div>
         )}
       </div>
     </div>

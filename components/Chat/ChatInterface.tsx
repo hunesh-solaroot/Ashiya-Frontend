@@ -2,6 +2,7 @@
 
 import { ChatMessage } from '@/types';
 import { User, Bot, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 
 interface ChatInterfaceProps {
@@ -22,43 +23,20 @@ export default function ChatInterface({ messages, isLoading }: ChatInterfaceProp
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full min-h-[70vh] animate-fade-in">
             <div className="relative mb-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 rounded-2xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-300">
-                <Sparkles className="text-white w-10 h-10" />
-              </div>
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary-400 rounded-full animate-pulse"></div>
+              <Image
+                src="/logo-collapsed.png"
+                alt="A.S.H.I.Y.A Logo"
+                width={120}
+                height={120}
+                className="object-contain"
+                priority
+              />
             </div>
             
             <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-4">
               A.S.H.I.Y.A
             </h1>
-            <p className="text-gray-400 text-xl mb-12 font-light">How can I help you today?</p>
-            
-            {/* Quick suggestions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-3xl">
-              {[
-                { title: "Solar Panel Analysis", desc: "Analyze solar panel efficiency and performance", icon: "⚡" },
-                { title: "Yield Estimation", desc: "Get accurate solar yield predictions", icon: "📊" },
-                { title: "System Audit", desc: "Comprehensive solar system audit", icon: "🔍" },
-                { title: "Technical Support", desc: "Get help with technical questions", icon: "💬" }
-              ].map((suggestion, idx) => (
-                <button
-                  key={idx}
-                  className="group p-5 text-left border border-gray-700 rounded-xl hover:border-primary-500 hover:bg-[#2f2f2f] transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-1"
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="text-2xl">{suggestion.icon}</span>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-200 group-hover:text-primary-400 mb-1.5 transition-colors">
-                        {suggestion.title}
-                      </div>
-                      <div className="text-sm text-gray-400 group-hover:text-gray-300">
-                        {suggestion.desc}
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
+            <p className="text-gray-400 text-xl font-light">How can I help you today?</p>
           </div>
         ) : (
           <div className="space-y-8 pb-8">
@@ -69,7 +47,7 @@ export default function ChatInterface({ messages, isLoading }: ChatInterfaceProp
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
                 {message.role === 'assistant' && (
-                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg ring-2 ring-primary-100">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-[#533293] to-[#A4496A] flex items-center justify-center shadow-lg ring-2 ring-[#533293]/20">
                     <Bot size={20} className="text-white" />
                   </div>
                 )}
@@ -77,7 +55,7 @@ export default function ChatInterface({ messages, isLoading }: ChatInterfaceProp
                 <div className={`flex gap-3 max-w-[80%] md:max-w-[75%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                   <div className={`flex-1 ${
                     message.role === 'user' 
-                      ? 'bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-2xl rounded-tr-sm shadow-lg' 
+                      ? 'bg-gradient-to-br from-[#533293] to-[#A4496A] text-white rounded-2xl rounded-tr-sm shadow-lg' 
                       : 'bg-[#2f2f2f] text-gray-200 rounded-2xl rounded-tl-sm shadow-md border border-gray-700'
                   } px-5 py-4`}>
                     <div className="prose prose-sm max-w-none">
@@ -98,7 +76,7 @@ export default function ChatInterface({ messages, isLoading }: ChatInterfaceProp
             
             {isLoading && (
               <div className="flex gap-4 justify-start animate-fade-in">
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-[#533293] to-[#A4496A] flex items-center justify-center shadow-lg">
                   <Bot size={20} className="text-white" />
                 </div>
                 <div className="bg-[#2f2f2f] rounded-2xl rounded-tl-sm shadow-md border border-gray-700 px-5 py-4">

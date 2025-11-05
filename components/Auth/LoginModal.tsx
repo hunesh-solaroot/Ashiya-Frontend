@@ -203,7 +203,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister, onSwit
                   onSwitchToForgotPassword();
                 }
               }}
-              className="text-sm text-primary-400 hover:text-primary-300 hover:underline"
+              className="text-sm text-[#A4496A] hover:text-[#A4496A]/80 hover:underline"
             >
               Forget password?
             </button>
@@ -213,7 +213,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister, onSwit
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold hover:from-primary-700 hover:to-primary-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            className="w-full bg-gradient-to-r from-[#533293] to-[#A4496A] text-white py-3 rounded-lg font-semibold hover:from-[#533293]/90 hover:to-[#A4496A]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
           >
             {isLoading ? 'Logging in...' : 'Log In'}
           </button>
@@ -224,7 +224,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister, onSwit
             <button
               type="button"
               onClick={onSwitchToRegister}
-              className="text-primary-400 hover:text-primary-300 font-semibold hover:underline"
+              className="text-[#A4496A] hover:text-[#A4496A]/80 font-semibold hover:underline"
             >
               Create an Account
             </button>
