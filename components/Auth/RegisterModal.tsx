@@ -99,32 +99,32 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
       }}
     >
       <div 
-        className="bg-[#171717] border border-gray-800 rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col relative"
+        className="bg-white border border-gray-300 rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header - Fixed */}
-        <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-800 relative">
+        <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-300 relative">
           <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               onClose();
             }}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 transition-colors z-20 bg-[#2f2f2f] rounded-full p-1 hover:bg-[#3f3f3f]"
+            className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-20 bg-gray-100 rounded-full p-1 hover:bg-gray-200"
             type="button"
           >
             <X size={24} />
           </button>
-          <h2 className="text-3xl font-bold text-white mb-2">Sign in</h2>
-          <p className="text-gray-400">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign in</h2>
+          <p className="text-gray-600">
             You'll get smarter responses and can upload files, images, and more.
           </p>
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin dark-scrollbar">
+        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin">
           {error && (
-            <div className="mb-4 p-3 bg-red-900/30 border border-red-800 rounded-lg text-red-400 text-sm">
+            <div className="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg text-red-600 text-sm">
               {error}
             </div>
           )}
@@ -135,7 +135,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
             type="button"
             onClick={handleGoogleSignup}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-700 rounded-lg hover:bg-[#2f2f2f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -155,7 +155,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span className="text-gray-300 font-medium">Continue with Google</span>
+            <span className="text-gray-900 font-medium">Continue with Google</span>
           </button>
 
           {/* Microsoft Signup Button */}
@@ -163,7 +163,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
             type="button"
             onClick={handleMicrosoftSignup}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-700 rounded-lg hover:bg-[#2f2f2f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5" viewBox="0 0 23 23" fill="none">
               <path d="M0 0H10.5V10.5H0V0Z" fill="#F25022" />
@@ -171,7 +171,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
               <path d="M0 12.5H10.5V23H0V12.5Z" fill="#00A4EF" />
               <path d="M12.5 12.5H23V23H12.5V12.5Z" fill="#FFB900" />
             </svg>
-            <span className="text-gray-300 font-medium">Continue with Microsoft</span>
+            <span className="text-gray-900 font-medium">Continue with Microsoft</span>
           </button>
 
           {/* Phone Login Button */}
@@ -179,24 +179,24 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
             type="button"
             onClick={handlePhoneLogin}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-700 rounded-lg hover:bg-[#2f2f2f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
             </svg>
-            <span className="text-gray-300 font-medium">Continue with phone</span>
+            <span className="text-gray-900 font-medium">Continue with phone</span>
           </button>
 
           {/* Separator */}
           <div className="relative flex items-center my-6">
-            <div className="flex-1 border-t border-gray-700"></div>
-            <span className="px-4 text-sm text-gray-500 bg-[#171717]">or</span>
-            <div className="flex-1 border-t border-gray-700"></div>
+            <div className="flex-1 border-t border-gray-300"></div>
+            <span className="px-4 text-sm text-gray-500 bg-white">or</span>
+            <div className="flex-1 border-t border-gray-300"></div>
           </div>
 
           {/* Username Input */}
           <div>
-            <label htmlFor="register-username" className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="register-username" className="block text-sm font-medium text-gray-900 mb-1">
               Username*
             </label>
             <input
@@ -206,13 +206,13 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter username"
               required
-              className="w-full px-4 py-3 bg-[#2f2f2f] border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+              className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
             />
           </div>
 
           {/* Full Name Input */}
           <div>
-            <label htmlFor="register-fullname" className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="register-fullname" className="block text-sm font-medium text-gray-900 mb-1">
               Full Name*
             </label>
             <input
@@ -222,13 +222,13 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Your full name"
               required
-              className="w-full px-4 py-3 bg-[#2f2f2f] border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+              className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
             />
           </div>
 
           {/* Email Input */}
           <div>
-            <label htmlFor="register-email" className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="register-email" className="block text-sm font-medium text-gray-900 mb-1">
               Email*
             </label>
             <input
@@ -238,13 +238,13 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
               required
-              className="w-full px-4 py-3 bg-[#2f2f2f] border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+              className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
             />
           </div>
 
           {/* Password Input */}
           <div>
-            <label htmlFor="register-password" className="block text-sm font-medium text-gray-300 mb-1">
+            <label htmlFor="register-password" className="block text-sm font-medium text-gray-900 mb-1">
               Password*
             </label>
             <input
@@ -255,7 +255,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
               placeholder="Min. 8 characters"
               required
               minLength={8}
-              className="w-full px-4 py-3 bg-[#2f2f2f] border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+              className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
             />
           </div>
 
@@ -269,7 +269,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
           </button>
 
           {/* Login Link */}
-          <div className="text-center text-sm text-gray-400">
+          <div className="text-center text-sm text-gray-600">
             Already have an account?{' '}
             <button
               type="button"

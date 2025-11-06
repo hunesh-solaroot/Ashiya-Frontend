@@ -45,18 +45,18 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
       }}
     >
       <div 
-        className="bg-[#171717] border border-gray-800 rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col relative"
+        className="bg-white border border-gray-300 rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-800 relative">
+        <div className="flex-shrink-0 p-6 pb-4 border-b border-gray-300 relative">
           <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               onClose();
             }}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 transition-colors z-20 bg-[#2f2f2f] rounded-full p-1 hover:bg-[#3f3f3f]"
+            className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition-colors z-20 bg-gray-100 rounded-full p-1 hover:bg-gray-200"
             type="button"
           >
             <X size={24} />
@@ -68,7 +68,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
               e.stopPropagation();
               onBackToLogin();
             }}
-            className="absolute top-4 left-4 text-gray-400 hover:text-gray-200 transition-colors z-20 bg-[#2f2f2f] rounded-full p-1 hover:bg-[#3f3f3f]"
+            className="absolute top-4 left-4 text-gray-600 hover:text-gray-900 transition-colors z-20 bg-gray-100 rounded-full p-1 hover:bg-gray-200"
             type="button"
           >
             <ArrowLeft size={20} />
@@ -79,8 +79,8 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
               <Mail className="text-white w-6 h-6" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2 text-center">Forgot Password</h2>
-          <p className="text-gray-400 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center">Forgot Password</h2>
+          <p className="text-gray-600 text-center">
             {success 
               ? 'Check your email for reset instructions' 
               : 'Enter your email to receive password reset instructions'}
@@ -88,10 +88,10 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin dark-scrollbar">
+        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin">
           {success ? (
             <div className="space-y-4">
-              <div className="p-4 bg-green-900/30 border border-green-800 rounded-lg text-green-400 text-sm">
+              <div className="p-4 bg-green-50 border border-green-300 rounded-lg text-green-700 text-sm">
                 <p className="font-medium mb-1">Email sent successfully!</p>
                 <p>We've sent password reset instructions to your email address. Please check your inbox and follow the instructions to reset your password.</p>
               </div>
@@ -106,13 +106,13 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="mb-4 p-3 bg-red-900/30 border border-red-800 rounded-lg text-red-400 text-sm">
+                <div className="mb-4 p-3 bg-red-50 border border-red-300 rounded-lg text-red-600 text-sm">
                   {error}
                 </div>
               )}
 
               <div>
-                <label htmlFor="forgot-email" className="block text-sm font-medium text-gray-300 mb-1">
+                <label htmlFor="forgot-email" className="block text-sm font-medium text-gray-900 mb-1">
                   Email Address*
                 </label>
                 <input
@@ -122,7 +122,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
                   required
-                  className="w-full px-4 py-3 bg-[#2f2f2f] border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                  className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
                 />
               </div>
 
@@ -134,7 +134,7 @@ export default function ForgotPasswordModal({ isOpen, onClose, onBackToLogin }: 
                 {isLoading ? 'Sending...' : 'Send Reset Link'}
               </button>
 
-              <div className="text-center text-sm text-gray-400">
+              <div className="text-center text-sm text-gray-600">
                 Remember your password?{' '}
                 <button
                   type="button"

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar/Sidebar';
+import Header from '@/components/Header/Header';
 import ChatInterface from '@/components/Chat/ChatInterface';
 import ChatInput from '@/components/Chat/ChatInput';
 import LoginModal from '@/components/Auth/LoginModal';
@@ -78,7 +79,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex h-screen bg-[#171717] overflow-hidden">
+      <div className="flex h-screen bg-white overflow-hidden">
         <Sidebar 
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -87,6 +88,7 @@ export default function Home() {
         />
         
         <div className="flex-1 flex flex-col overflow-hidden">
+          <Header />
           <ChatInterface messages={messages} isLoading={isLoading} />
           <ChatInput
             inputValue={inputValue}
