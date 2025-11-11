@@ -6,15 +6,59 @@ export interface ChatMessage {
 }
 
 export interface ChatHistoryItem {
-  id: number;
+  id: number | string;
   title: string;
-  subtitle: string;
+  subtitle?: string;
+  messageCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  isActive?: boolean;
+}
+
+export interface ChatSession {
+  id: number | string;
+  user_id: number | string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  is_active: boolean;
+  message_count: number;
+}
+
+export interface ChatSessionDetail extends ChatSession {
+  messages: Array<{
+    id: number | string;
+    role: 'user' | 'assistant';
+    content: string;
+    created_at?: string;
+    updated_at?: string;
+  }>;
+}
+
+export interface ChatSearchResult {
+  session_id: number | string;
+  title: string;
+  snippet?: string;
+  message_count?: number;
+  updated_at?: string;
 }
 
 export interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
   chatHistory: ChatHistoryItem[];
+  isChatHistoryLoading?: boolean;
+  onNewChat?: () => void;
+  isCreatingSession?: boolean;
+  onSelectChat?: (sessionId: number | string) => void;
+  currentSessionId?: number | string | null;
+  onRenameChat?: (sessionId: number | string, title: string) => void | Promise<void>;
+  onDeleteChat?: (sessionId: number | string) => void | Promise<void>;
+  onSearchChange?: (value: string) => void;
+  searchQuery?: string;
+  searchResults?: ChatHistoryItem[];
+  isSearchLoading?: boolean;
+  onLoginClick?: () => void;
 }
 
 export interface ChatInterfaceProps {
@@ -24,6 +68,7 @@ export interface ChatInterfaceProps {
   onInputChange: (value: string) => void;
   onSendMessage: () => void;
   onKeyPress: (e: React.KeyboardEvent) => void;
+  isSessionLoading?: boolean;
 }
 
 // Auth Types

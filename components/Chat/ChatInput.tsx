@@ -6,19 +6,23 @@ import { useEffect, useRef, useState } from 'react';
 interface ChatInputProps {
   inputValue: string;
   isLoading: boolean;
+  isWebSearchEnabled: boolean;
   onInputChange: (value: string) => void;
   onSendMessage: () => void;
   onKeyPress: (e: React.KeyboardEvent) => void;
+  onToggleWebSearch: (value: boolean) => void;
 }
 
 type ModeType = 'file' | 'web' | 'more';
 
-export default function ChatInput({ 
-  inputValue, 
-  isLoading, 
-  onInputChange, 
-  onSendMessage, 
-  onKeyPress 
+export default function ChatInput({
+  inputValue,
+  isLoading,
+  isWebSearchEnabled,
+  onInputChange,
+  onSendMessage,
+  onKeyPress,
+  onToggleWebSearch,
 }: ChatInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -33,6 +37,19 @@ export default function ChatInput({
   }, [inputValue]);
 
   useEffect(() => {
+    setActiveModes((prev) => {
+      const hasWeb = prev.includes('web');
+      if (isWebSearchEnabled && !hasWeb) {
+        return [...prev, 'web'];
+      }
+      if (!isWebSearchEnabled && hasWeb) {
+        return prev.filter((mode) => mode !== 'web');
+      }
+      return prev;
+    });
+  }, [isWebSearchEnabled]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
@@ -44,6 +61,11 @@ export default function ChatInput({
   }, []);
 
   const handleModeSelect = (mode: ModeType) => {
+    if (mode === 'web') {
+      onToggleWebSearch(!isWebSearchEnabled);
+      setShowDropdown(false);
+      return;
+    }
     if (!activeModes.includes(mode)) {
       setActiveModes([...activeModes, mode]);
     }
@@ -51,6 +73,11 @@ export default function ChatInput({
   };
 
   const removeMode = (mode: ModeType) => {
+    if (mode === 'web') {
+      onToggleWebSearch(false);
+      setActiveModes((prev) => prev.filter((m) => m !== 'web'));
+      return;
+    }
     setActiveModes(activeModes.filter(m => m !== mode));
   };
 
@@ -101,9 +128,10 @@ export default function ChatInput({
                     <button
                       onClick={() => handleModeSelect('web')}
                       className="w-full px-4 py-2.5 text-left text-sm text-gray-900 hover:bg-gray-100 flex items-center gap-3 transition-colors"
+                      aria-pressed={isWebSearchEnabled}
                     >
                       <Globe size={18} className="text-gray-600" />
-                      <span>Web Search</span>
+                      <span>{isWebSearchEnabled ? 'Disable Web Search' : 'Enable Web Search'}</span>
                     </button>
                     <button
                       onClick={() => handleModeSelect('more')}
